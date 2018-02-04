@@ -93,6 +93,7 @@ class PBPC_EDD_Gateway {
 			$payment_id = edd_insert_payment($payment);
 
 			self::send_instructions( $purchase_data, $payment_id );
+			self::send_notification( $purchase_data, $payment_id );
 	 
 			edd_send_to_success_page();
 		}		
@@ -157,7 +158,7 @@ class PBPC_EDD_Gateway {
 			}
 		?></ul>
 		
-		<p>{sitename}</p>
+		{sitename}
 		
 		<?php
 			
@@ -167,10 +168,52 @@ class PBPC_EDD_Gateway {
 		
 		$message = apply_filters( 'edd_email_template_wpautop', true ) ? wpautop( $message ) : $message;
 
-
-		EDD()->emails->send( $to, $subject, $message );
+		$emails = EDD()->emails;
+		$emails->__set( 'heading', __( 'Send me a postcard!', 'pbpc' ) );
+		$emails->send( $to, $subject, $message );
 			
 		
+	}
+	
+	static function send_notification( $purchase_data, $payment_id ) {
+		
+		$subject = sprintf( __( 'A postcard is coming - Order #%d', 'pbpc' ), $payment_id );
+		
+		ob_start();
+		
+		_e( '{fullname} would like to pay for <strong>Order #{payment_id}</strong> by sending you a postcard.', 'pbpc' ); ?>
+		
+		
+		<?php _e( 'Downloads:', 'pbpc' ); ?>		
+		
+		<ul><?php
+			foreach( $purchase_data['downloads'] as $download_data) {
+				$download = edd_get_download( $download_data['id'] );
+				?><li><strong><?php
+					echo $download->post_title;
+				?></strong></li><?php
+			}
+		?></ul>
+
+
+		<?php _e('Purchased by:', 'pbpc'); ?>
+		
+		
+		{fullname}
+		{user_email}
+
+		<?php
+		_e( 'Be sure to check your mailbox for the postcard in the coming days.', 'pbpc' );
+
+		$message = ob_get_clean();
+		
+		$message = edd_do_email_tags( $message, $payment_id );
+		
+		$message = apply_filters( 'edd_email_template_wpautop', true ) ? wpautop( $message ) : $message;
+
+		$emails = EDD()->emails;
+		$emails->__set( 'heading', __( 'Check your mailbox!', 'pbpc' ) );
+		$emails->send( edd_get_admin_notice_emails(), $subject, $message, $attachments );
 	}
 	
 }
