@@ -8,7 +8,7 @@
       var postData;
       postData = {
         action: 'pbpc_edd_calculate_gateway_discount',
-        gateway: jQuery(this).val()
+        'payment-mode': jQuery(this).val()
       };
       return jQuery.ajax({
         type: "POST",
@@ -16,8 +16,7 @@
         dataType: "json",
         url: edd_global_vars.ajaxurl,
         success: function success(discount_response) {
-          jQuery('#edd_checkout_cart').replaceWith(discount_response.html);
-          return jQuery('.edd_cart_amount').html(discount_response.total);
+          return jQuery('#edd_checkout_cart').replaceWith(discount_response.html);
         }
       });
     });

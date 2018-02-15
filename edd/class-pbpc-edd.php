@@ -13,7 +13,7 @@ class PBPC_EDD {
 	    
 		require_once dirname( PBPC_PLUGIN_FILE ) . '/edd/class-pbpc-edd-gateway.php';
 	    
-		// require_once dirname( PBPC_PLUGIN_FILE ) . '/edd/class-pbpc-edd-discount.php';
+		require_once dirname( PBPC_PLUGIN_FILE ) . '/edd/class-pbpc-edd-taxes.php';
 	    
 		require_once dirname( PBPC_PLUGIN_FILE ) . '/edd/class-pbpc-edd-admin.php';
 	    
