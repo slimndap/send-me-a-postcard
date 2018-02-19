@@ -14,4 +14,3 @@ jQuery ->
 			url: edd_global_vars.ajaxurl,
 			success: (discount_response) -> 
 				jQuery('#edd_checkout_cart').replaceWith discount_response.html 
-		

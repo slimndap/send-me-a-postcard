@@ -18,6 +18,7 @@ class PBPC_EDD_Gateway {
 		add_filter( 'edd_settings_sections_gateways', array( __CLASS__, 'register_gateway_section' ), 1, 1 );
 		add_action( 'edd_gateway_'.self::GATEWAY_ID, array( __CLASS__, 'process_payment' ) );
 		
+		
 	}	
 	
 	
@@ -60,7 +61,7 @@ class PBPC_EDD_Gateway {
 
 		?><fieldset>
 			<legend><?php _e( 'Send me a postcard', 'pbpc' ); ?> </legend>		
-			<p><?php _e( 'You can download your purchase <strong>for free</strong> as soon as your postcard arrives.', 'pbpc' ); ?></p>
+			<p><?php _e( 'You can download your purchase <strong>for free</strong> as soon as I receive your postcard.', 'pbpc' ); ?></p>
 			<p><?php _e( 'An e-mail with instructions will be sent after the next step.', 'pbpc' ); ?></p>
 		</fieldset><?php
 

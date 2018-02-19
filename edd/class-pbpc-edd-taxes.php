@@ -8,8 +8,29 @@ class PBPC_EDD_Taxes {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_script' ) );
 		
 		add_filter( 'edd_use_taxes', array( __CLASS__, 'dont_use_taxes' ) );
+		add_filter( 'edd_cart_total', array( __CLASS__, 'change_cart_total' ) );
 
 
+	}
+	
+	static function change_cart_total( $cart_total_html ) {
+		
+		// Leave alone if PBPC gateway is not allowed for this basket.
+		if ( !PBPC_EDD_Download::is_gateway_allowed_for_basket() ) {
+			return $cart_total_html;
+		}
+		
+		// Disable taxes if no gateway is selected, but PBPC gateway is the default gateway.
+		if ( empty( $_REQUEST['payment-mode'] ) && PBPC_EDD_Gateway::GATEWAY_ID == edd_get_default_gateway() ) {
+			return '<s>'.$cart_total_html.'</s> '.__('free', 'pbpc');
+		}
+
+		// Disable taxes if PBPC is the selected gateway.
+		if ( PBPC_EDD_Gateway::GATEWAY_ID == $_REQUEST['payment-mode'] ) {
+			return '<s>'.$cart_total_html.'</s> '.__('free', 'pbpc');
+		}
+		
+		return $cart_total_html;
 	}
 	
 	static function dont_use_taxes( $ret ) {
