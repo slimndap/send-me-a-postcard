@@ -1,5 +1,5 @@
 <?php
-class PBPC_EDD_Taxes {
+class PBPC_EDD_Cart {
 	
 	static function init() {
 		add_action( 'wp_ajax_pbpc_edd_calculate_gateway_discount', array( __CLASS__, 'recalculate_taxes' ) );
@@ -20,14 +20,28 @@ class PBPC_EDD_Taxes {
 			return $cart_total_html;
 		}
 		
-		// Disable taxes if no gateway is selected, but PBPC gateway is the default gateway.
+		// Update cart total if no gateway is selected, but PBPC gateway is the default gateway.
 		if ( empty( $_REQUEST['payment-mode'] ) && PBPC_EDD_Gateway::GATEWAY_ID == edd_get_default_gateway() ) {
-			return '<s>'.$cart_total_html.'</s> '.__('free', 'pbpc');
+
+			ob_start();
+			?><s><?php
+				echo $cart_total_html;
+			?></s> <?php 
+			_e('free', 'pbpc');
+			$cart_total_html = ob_get_clean();
+			
 		}
 
-		// Disable taxes if PBPC is the selected gateway.
+		// Update cart total if PBPC is the selected gateway.
 		if ( PBPC_EDD_Gateway::GATEWAY_ID == $_REQUEST['payment-mode'] ) {
-			return '<s>'.$cart_total_html.'</s> '.__('free', 'pbpc');
+
+			ob_start();
+			?><s><?php
+				echo $cart_total_html;
+			?></s> <?php 
+			_e('free', 'pbpc');
+			$cart_total_html = ob_get_clean();
+
 		}
 		
 		return $cart_total_html;
@@ -91,4 +105,4 @@ class PBPC_EDD_Taxes {
 	
 }
 
-PBPC_EDD_Taxes::init();
+PBPC_EDD_Cart::init();
